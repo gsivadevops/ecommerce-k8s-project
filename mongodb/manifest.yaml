@@ -1,70 +1,17 @@
-# # Deployment Resource
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: mongodb
-#   namespace: roboshop
-#   # deployment labels, helps to organize and select resources.
-#   labels:
-#     component: mongodb
-#     project: roboshop
-#     tier: database
-# # Deployment spec    
-# spec:
-#   # 1 pod replica for mongodb
-#   replicas: 1
-#   # These are the labels replica set use to create pod replicas, this should match pod labels
-#   selector:
-#     matchLabels:
-#       component: mongodb
-#       project: roboshop
-#       tier: database   
-#   # this is pod definition      
-#   template:
-#     metadata:
-#     labels:
-#       component: mongodb
-#       project: roboshop
-#       tier: database
-#     spec:
-#       containers:
-#       - name: mongodb
-#         image: gsivadvops/mongodb:v1
-# ---
-# # service resource used to expose pods
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: mongodb
-#   namespace: roboshop
-#   # service labels, helps to organize and identify this service
-#   labels:
-#     component: mongodb
-#     project: roboshop
-#     tier: database  
-# # service spec      
-# spec:
-#   # Matches pods with the same labels (so service knows which pods to send traffic to)
-#   selector:
-#     component: mongodb
-#     project: roboshop
-#     tier: database
-#   ports:
-#   - protocol: TCP
-#     port: 27017 # service port, what clients use
-#     targetPort: 27017 # container port inside pod            
-
+# Deployment Resource
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongodb
   namespace: roboshop
-  # deployment labels
+  # deployment labels, helps to organize and select resources.
   labels:
     component: mongodb
     project: roboshop
     tier: database
+# Deployment spec     
 spec:
+  # 1 pod replica
   replicas: 1
   # These are the labels replica set use to create pod replicas, this should match pod labels
   selector:
@@ -84,21 +31,25 @@ spec:
       - name: mongodb
         image: joindevops/mongodb:v1
 ---
+# service resource used to expose pods
 apiVersion: v1
 kind: Service
 metadata:
   name: mongodb
   namespace: roboshop
+  # service labels, helps to organize and identify this service
   labels:
     component: mongodb
     project: roboshop
     tier: database
+# service spec 
 spec:
+  # Matches pods with the same labels (so service knows which pods to send traffic to)
   selector:
     component: mongodb
     project: roboshop
     tier: database
   ports:
   - protocol: TCP
-    port: 27017 # service port
-    targetPort: 27017 # container port
+    port: 27017 # service port, what clients use
+    targetPort: 27017 # container port inside pod 
