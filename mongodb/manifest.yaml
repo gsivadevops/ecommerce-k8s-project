@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: mongodb
-        image: joindevops/mongodb:v1
+        image: gsivadvops/mongodb:v1
 ---
 # service resource used to expose pods
 apiVersion: v1
