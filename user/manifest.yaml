@@ -1,0 +1,76 @@
+# configmap - pod env variables
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user
+  namespace: roboshop
+  labels:
+    component: user
+    project: roboshop
+    tier: app
+data:
+  MONGO_URL: "mongodb://mongodb:27017/users"
+  REDIS_URL: "redis://redis:6379"
+  MONGO: "true"
+
+---  
+
+# Deployment Resource
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user
+  namespace: roboshop
+  # deployment labels, helps to organize and select resources.
+  labels:
+    component: user
+    project: roboshop
+    tier: app
+# Deployment spec     
+spec:
+  # 1 pod replica
+  replicas: 1
+  # These are the labels replica set use to create pod replicas, this should match pod labels
+  selector:
+    matchLabels:
+      component: user
+      project: roboshop
+      tier: database
+  # This is pod definition
+  template:
+    metadata:
+      labels:
+        component: user
+        project: roboshop
+        tier: database
+    spec:
+      containers:
+      - name: user
+        image: gsivadvops/user:v1
+        # refring configmap in container
+        envFrom:
+        - configMapRef:
+            name: user
+---
+# service resource used to expose pods
+apiVersion: v1
+kind: Service
+metadata:
+  name: user
+  namespace: roboshop
+  # service labels, helps to organize and identify this service
+  labels:
+    component: user
+    project: roboshop
+    tier: app
+# service spec 
+spec:
+  # Matches pods with the same labels (so service knows which pods to send traffic to)
+  selector:
+    component: user
+    project: roboshop
+    tier: database
+  ports:
+  - protocol: TCP
+    port: 8080 # service port, what clients use
+    targetPort: 8080 # container port inside pod 
