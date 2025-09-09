@@ -33,7 +33,7 @@ spec:
 ---
 # service resource used to expose pods
 apiVersion: v1
-kind: service
+kind: Service
 metadata:
   name: mongodb
   namespace: roboshop
@@ -54,4 +54,3 @@ spec:
     port: 27017 # service port, what clients use
     targetPort: 27017 # container port inside pod            
 
-    
