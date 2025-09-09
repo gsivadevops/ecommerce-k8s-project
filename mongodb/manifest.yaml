@@ -53,3 +53,5 @@ spec:
   - protocol: TCP
     port: 27017 # service port, what clients use
     targetPort: 27017 # container port inside pod            
+
+    
