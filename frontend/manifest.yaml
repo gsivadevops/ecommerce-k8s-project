@@ -132,6 +132,7 @@ metadata:
     tier: web
 # service spec 
 spec:
+  type: LoadBalancer
   # Matches pods with the same labels (so service knows which pods to send traffic to)
   selector:
     component: frontend
