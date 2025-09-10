@@ -1,4 +1,3 @@
-# secret for rabbitmq password
 apiVersion: v1
 kind: Secret
 metadata:
@@ -12,22 +11,18 @@ type: Opaque
 data:
   RABBITMQ_DEFAULT_USER: "cm9ib3Nob3A="
   RABBITMQ_DEFAULT_PASS: "cm9ib3Nob3AxMjM="
-
----  
-# Deployment Resource
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rabbitmq
   namespace: roboshop
-  # deployment labels, helps to organize and select resources.
+  # deployment labels
   labels:
     component: rabbitmq
     project: roboshop
     tier: database
-# Deployment spec     
 spec:
-  # 1 pod replica
   replicas: 1
   # These are the labels replica set use to create pod replicas, this should match pod labels
   selector:
@@ -49,27 +44,22 @@ spec:
         envFrom:
         - secretRef:
             name: rabbitmq
-            
 ---
-# service resource used to expose pods
 apiVersion: v1
 kind: Service
 metadata:
   name: rabbitmq
   namespace: roboshop
-  # service labels, helps to organize and identify this service
   labels:
     component: rabbitmq
     project: roboshop
     tier: database
-# service spec 
 spec:
-  # Matches pods with the same labels (so service knows which pods to send traffic to)
   selector:
     component: rabbitmq
     project: roboshop
     tier: database
   ports:
   - protocol: TCP
-    port: 5672 # service port, what clients use
-    targetPort: 5672 # container port inside pod 
+    port: 5672 # service port
+    targetPort: 5672 # container port
