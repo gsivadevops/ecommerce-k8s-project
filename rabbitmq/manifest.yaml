@@ -12,6 +12,8 @@ type: Opaque
 data:
   _DEFAULT_USER: "cm9ib3Nob3A="
   _DEFAULT_PASS: "cm9ib3Nob3AxMjM="
+
+---  
 # Deployment Resource
 apiVersion: apps/v1
 kind: Deployment
