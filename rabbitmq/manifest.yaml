@@ -1,31 +1,28 @@
-# configmap - pod env variables
+# secret for rabbitmq password
 apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
-  name: cart
+  name: rabbitmq
   namespace: roboshop
   labels:
-    component: cart
+    component: rabbitmq
     project: roboshop
-    tier: app
+    tier: database
+type: Opaque
 data:
-  REDIS_HOST: "redis"
-  CATALOGUE_HOST: "catalogue"
-  CATALOGUE_PORT: "8080"
-
----  
-
+  _DEFAULT_USER: "cm9ib3Nob3A="
+  _DEFAULT_PASS: "cm9ib3Nob3AxMjM="
 # Deployment Resource
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cart
+  name: rabbitmq
   namespace: roboshop
   # deployment labels, helps to organize and select resources.
   labels:
-    component: cart
+    component: rabbitmq
     project: roboshop
-    tier: app
+    tier: database
 # Deployment spec     
 spec:
   # 1 pod replica
@@ -33,44 +30,40 @@ spec:
   # These are the labels replica set use to create pod replicas, this should match pod labels
   selector:
     matchLabels:
-      component: cart
+      component: rabbitmq
       project: roboshop
-      tier: app
+      tier: database
   # This is pod definition
   template:
     metadata:
       labels:
-        component: cart
+        component: rabbitmq
         project: roboshop
-        tier: app
+        tier: database
     spec:
       containers:
-      - name: cart
-        image: gsivadvops/cart:v1
-        # refring configmap in container
-        envFrom:
-        - configMapRef:
-            name: cart
+      - name: rabbitmq
+        image: rabbitmq:3
 ---
 # service resource used to expose pods
 apiVersion: v1
 kind: Service
 metadata:
-  name: cart
+  name: rabbitmq
   namespace: roboshop
   # service labels, helps to organize and identify this service
   labels:
-    component: cart
+    component: rabbitmq
     project: roboshop
-    tier: app
+    tier: database
 # service spec 
 spec:
   # Matches pods with the same labels (so service knows which pods to send traffic to)
   selector:
-    component: cart
+    component: rabbitmq
     project: roboshop
-    tier: app
+    tier: database
   ports:
   - protocol: TCP
-    port: 8080 # service port, what clients use
-    targetPort: 8080 # container port inside pod 
+    port: 5672 # service port, what clients use
+    targetPort: 5672 # container port inside pod 

@@ -35,14 +35,14 @@ spec:
     matchLabels:
       component: user
       project: roboshop
-      tier: database
+      tier: app
   # This is pod definition
   template:
     metadata:
       labels:
         component: user
         project: roboshop
-        tier: database
+        tier: app
     spec:
       containers:
       - name: user
@@ -69,7 +69,7 @@ spec:
   selector:
     component: user
     project: roboshop
-    tier: database
+    tier: app
   ports:
   - protocol: TCP
     port: 8080 # service port, what clients use

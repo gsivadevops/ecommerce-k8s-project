@@ -1,31 +1,27 @@
-# configmap - pod env variables
+# secret for mysql password
 apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
-  name: cart
+  name: mysql
   namespace: roboshop
   labels:
-    component: cart
+    component: mysql
     project: roboshop
-    tier: app
+    tier: database
+type: Opaque
 data:
-  REDIS_HOST: "redis"
-  CATALOGUE_HOST: "catalogue"
-  CATALOGUE_PORT: "8080"
-
----  
-
+  MYSQL_ROOT_PASSWORD: "Um9ib1Nob3BAMQ=="
 # Deployment Resource
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cart
+  name: mysql
   namespace: roboshop
   # deployment labels, helps to organize and select resources.
   labels:
-    component: cart
+    component: mysql
     project: roboshop
-    tier: app
+    tier: database
 # Deployment spec     
 spec:
   # 1 pod replica
@@ -33,44 +29,40 @@ spec:
   # These are the labels replica set use to create pod replicas, this should match pod labels
   selector:
     matchLabels:
-      component: cart
+      component: mysql
       project: roboshop
-      tier: app
+      tier: database
   # This is pod definition
   template:
     metadata:
       labels:
-        component: cart
+        component: mysql
         project: roboshop
-        tier: app
+        tier: database
     spec:
       containers:
-      - name: cart
-        image: gsivadvops/cart:v1
-        # refring configmap in container
-        envFrom:
-        - configMapRef:
-            name: cart
+      - name: mysql
+        image: gsivadvops/mysql:v1
 ---
 # service resource used to expose pods
 apiVersion: v1
 kind: Service
 metadata:
-  name: cart
+  name: mysql
   namespace: roboshop
   # service labels, helps to organize and identify this service
   labels:
-    component: cart
+    component: mysql
     project: roboshop
-    tier: app
+    tier: database
 # service spec 
 spec:
   # Matches pods with the same labels (so service knows which pods to send traffic to)
   selector:
-    component: cart
+    component: mysql
     project: roboshop
-    tier: app
+    tier: database
   ports:
   - protocol: TCP
-    port: 8080 # service port, what clients use
-    targetPort: 8080 # container port inside pod 
+    port: 3306 # service port, what clients use
+    targetPort: 3306 # container port inside pod 

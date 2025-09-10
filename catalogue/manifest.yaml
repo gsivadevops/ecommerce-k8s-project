@@ -34,14 +34,14 @@ spec:
     matchLabels:
       component: catalogue
       project: roboshop
-      tier: database
+      tier: app
   # This is pod definition
   template:
     metadata:
       labels:
         component: catalogue
         project: roboshop
-        tier: database
+        tier: app
     spec:
       containers:
       - name: catalogue
@@ -61,14 +61,14 @@ metadata:
   labels:
     component: catalogue
     project: roboshop
-    tier: database
+    tier: app
 # service spec 
 spec:
   # Matches pods with the same labels (so service knows which pods to send traffic to)
   selector:
     component: catalogue
     project: roboshop
-    tier: database
+    tier: app
   ports:
   - protocol: TCP
     port: 8080 # service port, what clients use

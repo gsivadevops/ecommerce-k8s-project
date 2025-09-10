@@ -2,16 +2,15 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: cart
+  name: shipping
   namespace: roboshop
   labels:
-    component: cart
+    component: shipping
     project: roboshop
     tier: app
 data:
-  REDIS_HOST: "redis"
-  CATALOGUE_HOST: "catalogue"
-  CATALOGUE_PORT: "8080"
+  CART_ENDPOINT: "cart:8080"
+  DB_HOST: "mysql"
 
 ---  
 
@@ -19,11 +18,11 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cart
+  name: shipping
   namespace: roboshop
   # deployment labels, helps to organize and select resources.
   labels:
-    component: cart
+    component: shipping
     project: roboshop
     tier: app
 # Deployment spec     
@@ -33,41 +32,41 @@ spec:
   # These are the labels replica set use to create pod replicas, this should match pod labels
   selector:
     matchLabels:
-      component: cart
+      component: shipping
       project: roboshop
       tier: app
   # This is pod definition
   template:
     metadata:
       labels:
-        component: cart
+        component: shipping
         project: roboshop
         tier: app
     spec:
       containers:
-      - name: cart
-        image: gsivadvops/cart:v1
+      - name: shipping
+        image: gsivadvops/shipping:v1
         # refring configmap in container
         envFrom:
         - configMapRef:
-            name: cart
+            name: shipping
 ---
 # service resource used to expose pods
 apiVersion: v1
 kind: Service
 metadata:
-  name: cart
+  name: shipping
   namespace: roboshop
   # service labels, helps to organize and identify this service
   labels:
-    component: cart
+    component: shipping
     project: roboshop
     tier: app
 # service spec 
 spec:
   # Matches pods with the same labels (so service knows which pods to send traffic to)
   selector:
-    component: cart
+    component: shipping
     project: roboshop
     tier: app
   ports:
