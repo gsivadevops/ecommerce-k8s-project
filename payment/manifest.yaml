@@ -16,6 +16,7 @@ data:
   AMQP_HOST: "rabbitmq"
 
 ---  
+# Secret
 apiVersion: v1
 kind: Secret
 metadata:
@@ -65,8 +66,11 @@ spec:
         # refring configmap in container
         envFrom:
         - configMapRef:
-            name: payment
-            
+            name: payment  
+        # refring secret in container      
+        - secretRef:
+            name: payment    
+
 ---
 # service resource used to expose pods
 apiVersion: v1
