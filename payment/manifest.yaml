@@ -1,4 +1,100 @@
-# configmap - pod env variables
+# # configmap - pod env variables
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: payment
+#   namespace: roboshop
+#   labels:
+#     component: payment
+#     project: roboshop
+#     tier: app
+# data:
+#   CART_HOST: "cart"
+#   CART_PORT: "8080"
+#   USER_HOST: "user"
+#   USER_PORT: "8080"
+#   AMQP_HOST: "rabbitmq"
+
+# ---  
+# # Secret
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: payment
+#   labels:
+#     component: payment
+#     project: roboshop
+#     tier: app
+# type: Opaque
+# data:
+#   AMQP_USER: "cm9ib3Nob3A="
+#   AMQP_PASS: "cm9ib3Nob3AxMjM="
+
+# ---
+# # Deployment Resource
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: payment
+#   namespace: roboshop
+#   # deployment labels, helps to organize and select resources.
+#   labels:
+#     component: payment
+#     project: roboshop
+#     tier: app
+# # Deployment spec     
+# spec:
+#   # 1 pod replica
+#   replicas: 1
+#   # These are the labels replica set use to create pod replicas, this should match pod labels
+#   selector:
+#     matchLabels:
+#       component: payment
+#       project: roboshop
+#       tier: app
+#   # This is pod definition
+#   template:
+#     metadata:
+#       labels:
+#         component: payment
+#         project: roboshop
+#         tier: app
+#     spec:
+#       containers:
+#       - name: payment
+#         image: gsivadvops/payment:v1
+#         # refring configmap in container
+#         envFrom:
+#         - configMapRef:
+#             name: payment  
+#         # refring secret in container      
+#         - secretRef:
+#             name: payment    
+
+# ---
+# # service resource used to expose pods
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: payment
+#   namespace: roboshop
+#   # service labels, helps to organize and identify this service
+#   labels:
+#     component: payment
+#     project: roboshop
+#     tier: app
+# # service spec 
+# spec:
+#   # Matches pods with the same labels (so service knows which pods to send traffic to)
+#   selector:
+#     component: payment
+#     project: roboshop
+#     tier: app
+#   ports:
+#   - protocol: TCP
+#     port: 8080 # service port, what clients use
+#     targetPort: 8080 # container port inside pod 
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -14,9 +110,7 @@ data:
   USER_HOST: "user"
   USER_PORT: "8080"
   AMQP_HOST: "rabbitmq"
-
----  
-# Secret
+---
 apiVersion: v1
 kind: Secret
 metadata:
@@ -29,22 +123,18 @@ type: Opaque
 data:
   AMQP_USER: "cm9ib3Nob3A="
   AMQP_PASS: "cm9ib3Nob3AxMjM="
-
 ---
-# Deployment Resource
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: payment
   namespace: roboshop
-  # deployment labels, helps to organize and select resources.
+  # deployment labels
   labels:
     component: payment
     project: roboshop
     tier: app
-# Deployment spec     
 spec:
-  # 1 pod replica
   replicas: 1
   # These are the labels replica set use to create pod replicas, this should match pod labels
   selector:
@@ -62,35 +152,28 @@ spec:
     spec:
       containers:
       - name: payment
-        image: gsivadvops/payment:v1
-        # refring configmap in container
+        image: joindevops/payment:v1
         envFrom:
         - configMapRef:
-            name: payment  
-        # refring secret in container      
+            name: payment
         - secretRef:
-            name: payment    
-
+            name: payment
 ---
-# service resource used to expose pods
 apiVersion: v1
 kind: Service
 metadata:
   name: payment
   namespace: roboshop
-  # service labels, helps to organize and identify this service
   labels:
     component: payment
     project: roboshop
     tier: app
-# service spec 
 spec:
-  # Matches pods with the same labels (so service knows which pods to send traffic to)
   selector:
     component: payment
     project: roboshop
     tier: app
   ports:
   - protocol: TCP
-    port: 8080 # service port, what clients use
-    targetPort: 8080 # container port inside pod 
+    port: 8080 # service port
+    targetPort: 8080 # container port
