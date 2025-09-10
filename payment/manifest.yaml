@@ -66,6 +66,7 @@ spec:
         envFrom:
         - configMapRef:
             name: payment
+            
 ---
 # service resource used to expose pods
 apiVersion: v1
