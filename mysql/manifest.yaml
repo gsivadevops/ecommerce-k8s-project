@@ -45,6 +45,9 @@ spec:
       containers:
       - name: mysql
         image: gsivadvops/mysql:v1
+        envFrom:
+        - secretRef:
+            name: mysql 
 ---
 # service resource used to expose pods
 apiVersion: v1

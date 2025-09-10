@@ -46,6 +46,9 @@ spec:
       containers:
       - name: rabbitmq
         image: rabbitmq:3
+        envFrom:
+        - secretRef:
+            name: rabbitmq
 ---
 # service resource used to expose pods
 apiVersion: v1
