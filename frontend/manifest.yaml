@@ -227,10 +227,13 @@ metadata:
     component: frontend
     project: roboshop
     tier: web
+    
 spec:
+  # 1 pod replica
   replicas: 1
   # These are the labels replica set use to create pod replicas, this should match pod labels
   selector:
+  # These are the labels replica set use to create pod replicas, this should match pod labels
     matchLabels:
       component: frontend
       project: roboshop
@@ -259,6 +262,7 @@ spec:
               - key: nginx.conf
                 path: nginx.conf
 ---
+# service resource used to expose pods
 apiVersion: v1
 kind: Service
 metadata:
@@ -270,6 +274,7 @@ metadata:
     tier: web
 spec:
   type: LoadBalancer
+  # Matches pods with the same labels (so service knows which pods to send traffic to)
   selector:
     component: frontend
     project: roboshop
