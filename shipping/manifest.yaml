@@ -13,7 +13,6 @@ data:
   DB_HOST: "mysql"
 
 ---  
-
 # Deployment Resource
 apiVersion: apps/v1
 kind: Deployment
